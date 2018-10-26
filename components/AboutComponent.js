@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import  {Text, View} from 'react-native';
-import {Card} from 'react-native-elements';
+import  {Text, View, FlatList, ScrollView} from 'react-native';
+import { Card, ListItem} from 'react-native-elements';
 import {LEADERS} from '../shared/leaders';
 import {HISTORY} from '../shared/history';
 
@@ -26,7 +26,8 @@ class AboutUs extends Component {
     constructor(props){
         super(props);
         this.state = {
-            history : HISTORY
+            history : HISTORY,
+            leader : LEADERS
         };
     }
 
@@ -36,7 +37,42 @@ class AboutUs extends Component {
 
     render () {
         const historyId =  this.props.navigation.getParam('historyId', '');
-        return(<History history={this.state.history[+historyId]}/>);
+        const renderMenuItem = ({item,index}) => {
+            return (
+                <View>
+                    <ListItem 
+                        style={{borderBottomWidth: 0}}
+                        key={index}
+                        title={item.name}
+                        subtitle={item.description}
+                        hideChevron={true}
+                        leftAvatar={{source : require('./images/alberto.png')}}
+                    />
+                </View>
+            )
+        };
+
+        const {navigate} = this.props.navigation;
+
+        return (
+
+                <ScrollView>
+                    <History history={this.state.history[+historyId]}/>
+                    <Card style={{borderColor: 'white'}}
+                        title = "Our Leadership">
+                        <FlatList data = {this.state.leader}
+                        renderItem = {renderMenuItem}
+                        keyExtractor={item => item.id.toString()} />
+                    </Card>
+                </ScrollView>
+           
+        );
+    }
+}
+
+const styles = {
+    container : {
+        borderBottomWidth:0
     }
 }
 
